@@ -6,7 +6,7 @@ Built with love by Moon Dev 🚀
 
 import pandas as pd
 import numpy as np
-import pandas_ta as ta
+# import pandas_ta as ta  # Comentado temporariamente devido a problemas de compatibilidade
 from termcolor import colored, cprint
 
 def calculate_distance_mme9(df):

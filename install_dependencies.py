@@ -40,9 +40,13 @@ def main():
     # Lista de comandos para instalar
     commands = [
         ("pip install --upgrade pip", "Atualizando pip"),
-        ("pip install setuptools>=65.0.0 wheel>=0.37.0", "Instalando setuptools e wheel"),
+        ("pip uninstall numpy pandas pandas-ta -y", "Removendo versões conflitantes"),
+        ("pip install setuptools>=65.0.0,<81.0.0 wheel>=0.37.0", "Instalando setuptools e wheel"),
         ("pip install packaging>=21.0", "Instalando packaging"),
-        ("pip install -r requirements.txt", "Instalando dependências do projeto"),
+        ("pip install numpy>=1.21.0,<1.25.0", "Instalando numpy compatível"),
+        ("pip install pandas>=1.5.0,<2.0.0", "Instalando pandas compatível"),
+        ("pip install pandas-ta==0.3.14b0", "Instalando pandas-ta compatível"),
+        ("pip install -r requirements.txt", "Instalando demais dependências"),
     ]
     
     success_count = 0

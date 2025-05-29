@@ -9,7 +9,10 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.data.ohlcv_collector import collect_token_data
-from src.data.custom_indicators import *
+try:
+    from src.data.custom_indicators import *
+except ImportError:
+    from src.data.custom_indicators_simple import *
 from src.core.config import MONITORED_TOKENS
 from termcolor import colored, cprint
 import pandas as pd
