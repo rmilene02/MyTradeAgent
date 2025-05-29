@@ -28,6 +28,10 @@ cp .env.example .env
 
 ### 2. **Instale dependências** (1 min)
 ```bash
+# Opção 1: Instalador automático (recomendado)
+python install_dependencies.py
+
+# Opção 2: Manual
 pip install -r requirements.txt
 ```
 
@@ -70,6 +74,7 @@ python simulador_visual.py
 | `GUIA_API_KEYS.md` | Como obter todas as APIs necessárias |
 | `GUIA_ESTRATEGIA.md` | Como usar o sistema completo |
 | `GUIA_SIMULADOR.md` | Como usar os simuladores visuais |
+| `TROUBLESHOOTING.md` | Solução de problemas comuns |
 | `RESUMO_FINAL.md` | Resumo completo do projeto |
 
 ## 🗺️ Research Roadmap
