@@ -6,25 +6,37 @@ Built with love by Moon Dev 🚀
 # ⏰ Run Configuration
 RUN_INTERVAL_MINUTES = 15  # How often the AI agent runs
 
-# 🎯 Trading Strategy Prompt - The Secret Sauce! 
+# 🎯 Trading Strategy Prompt - Estratégia Distância MME9 + Bollinger Bands! 
 TRADING_PROMPT = """
-You are Moon Dev's AI Trading Assistant 🌙
+You are Moon Dev's AI Trading Assistant specialized in the Distance MME9 + Bollinger Bands Strategy 🌙
 
-Analyze the provided market data and make a trading decision based on these criteria:
-1. Price action relative to MA20 and MA40
-2. RSI levels and trend
-3. Volume patterns
-4. Recent price movements
+STRATEGY RULES:
+1. **SELL Signal**: When distanciaMME9 is ABOVE upper Bollinger Band AND shows reversal (exaustão alta)
+2. **BUY Signal**: When distanciaMME9 is BELOW lower Bollinger Band AND shows reversal (exaustão baixa)
+3. **NOTHING**: When in exhaustion zones but no reversal yet, or in neutral territory
 
-Respond in this exact format:
+STOP LOSS GUIDELINES:
+- For SELL: Stop above the high of the reversal candle
+- For BUY: Stop below the low of the reversal candle
+- Let AI decide optimal stop distance based on volatility
+
+TARGET GUIDELINES:
+- Use support/resistance levels provided
+- Consider risk/reward ratio (minimum 1:2)
+- Adjust based on market conditions
+
+Analyze the strategy summary provided and respond in this exact format:
 1. First line must be one of: BUY, SELL, or NOTHING (in caps)
 2. Then explain your reasoning, including:
-   - Technical analysis
-   - Risk factors
-   - Market conditions
+   - Distance MME9 analysis
+   - Bollinger Bands position
+   - Exhaustion/reversal signals
+   - Suggested stop loss level
+   - Suggested target level
+   - Risk/reward ratio
    - Confidence level (as a percentage, e.g. 75%)
 
-Remember: Moon Dev always prioritizes risk management! 🛡️
+Remember: This strategy focuses on mean reversion after exhaustion! 🎯
 """
 
 # 💰 Portfolio Allocation Prompt
@@ -54,7 +66,7 @@ Remember:
 - Cash must be stored as USDC using USDC_ADDRESS: {USDC_ADDRESS}
 """
 
-import anthropic
+import openai
 import os
 import pandas as pd
 import json
@@ -72,39 +84,40 @@ load_dotenv()
 class TradingAgent:
     def __init__(self):
         """Initialize the AI Trading Agent with Moon Dev's magic ✨"""
-        api_key = os.getenv("ANTHROPIC_KEY")
+        api_key = os.getenv("DEEPSEEK_API_KEY")
         if not api_key:
-            raise ValueError("🚨 ANTHROPIC_KEY not found in environment variables!")
+            raise ValueError("🚨 DEEPSEEK_API_KEY not found in environment variables!")
             
-        self.client = anthropic.Anthropic(api_key=api_key)
+        # Configure OpenAI client for DeepSeek
+        self.client = openai.OpenAI(
+            api_key=api_key,
+            base_url="https://api.deepseek.com"
+        )
         self.recommendations_df = pd.DataFrame(columns=['token', 'action', 'confidence', 'reasoning'])
-        print("🤖 Moon Dev's AI Trading Agent initialized!")
+        print("🤖 Moon Dev's AI Trading Agent initialized with DeepSeek!")
         
     def analyze_market_data(self, token, market_data):
-        """Analyze market data using Claude"""
+        """Analyze market data using DeepSeek with custom strategy"""
         try:
-            message = self.client.messages.create(
+            # Extrair o resumo da estratégia se disponível
+            strategy_summary = market_data.get('strategy_summary', 'Resumo da estratégia não disponível')
+            
+            response = self.client.chat.completions.create(
                 model=AI_MODEL,
                 max_tokens=AI_MAX_TOKENS,
                 temperature=AI_TEMPERATURE,
                 messages=[
                     {
                         "role": "user", 
-                        "content": f"{TRADING_PROMPT}\n\nMarket Data to Analyze:\n{market_data}"
+                        "content": f"{TRADING_PROMPT}\n\nStrategy Analysis:\n{strategy_summary}\n\nRaw Market Data:\n{str(market_data)[:1000]}..."
                     }
                 ]
             )
             
-            # Parse the response - handle both string and list responses
-            response = message.content
-            if isinstance(response, list):
-                # Extract text from TextBlock objects if present
-                response = '\n'.join([
-                    item.text if hasattr(item, 'text') else str(item)
-                    for item in response
-                ])
+            # Parse the response from DeepSeek
+            content = response.choices[0].message.content
             
-            lines = response.split('\n')
+            lines = content.split('\n')
             action = lines[0].strip() if lines else "NOTHING"
             
             # Extract confidence from the response (assuming it's mentioned as a percentage)
@@ -130,7 +143,7 @@ class TradingAgent:
             ], ignore_index=True)
             
             print(f"🎯 Moon Dev's AI Analysis Complete for {token[:4]}!")
-            return response
+            return content
             
         except Exception as e:
             print(f"❌ Error in AI analysis: {str(e)}")
@@ -169,7 +182,7 @@ class TradingAgent:
             
             recommendations_str = buy_df.to_string()
             
-            message = self.client.messages.create(
+            response = self.client.chat.completions.create(
                 model=AI_MODEL,
                 max_tokens=AI_MAX_TOKENS,
                 temperature=AI_TEMPERATURE,
@@ -181,13 +194,8 @@ class TradingAgent:
                 ]
             )
             
-            # Parse the allocation response
-            allocation_str = message.content
-            if isinstance(allocation_str, list):
-                allocation_str = '\n'.join([
-                    item.text if hasattr(item, 'text') else str(item)
-                    for item in allocation_str
-                ])
+            # Parse the allocation response from DeepSeek
+            allocation_str = response.choices[0].message.content
             
             # Extract the dictionary string and parse it
             try:
@@ -319,8 +327,21 @@ def main():
             # Analyze each token's data
             for token, data in market_data.items():
                 cprint(f"\n🤖 AI Agent Analyzing Token: {token}", "white", "on_green")
-                analysis = agent.analyze_market_data(token, data.to_dict())
-                print(f"\n📈 Analysis for contract: {token}")
+                
+                # Mostrar resumo da estratégia primeiro
+                if hasattr(data, 'attrs') and 'strategy_summary' in data.attrs:
+                    cprint("\n📊 RESUMO DA ESTRATÉGIA:", "white", "on_blue")
+                    print(data.attrs['strategy_summary'])
+                    print("\n" + "="*50 + "\n")
+                
+                # Preparar dados para análise
+                analysis_data = {
+                    'strategy_summary': data.attrs.get('strategy_summary', 'Não disponível') if hasattr(data, 'attrs') else 'Não disponível',
+                    'raw_data': data.to_dict()
+                }
+                
+                analysis = agent.analyze_market_data(token, analysis_data)
+                print(f"\n🤖 AI Analysis for contract: {token}")
                 print(analysis)
                 print("\n" + "="*50 + "\n")
             

@@ -1,24 +1,76 @@
-# 🤖 AI AGENTS FOR TRADING
+# 🌙 Moon Dev's AI Trading System
 
 [![Moon Dev](moondev.png)](https://www.moondev.com/)
 
-**⚠️ IMPORTANT: This is an experimental project. There are NO guarantees of profitability. Trading involves substantial risk of loss.**
+**⚠️ IMPORTANTE: Este é um projeto experimental. NÃO há garantias de lucratividade. Trading envolve risco substancial de perda.**
 
-This project explores the potential of [artificial financial intelligence](https://www.afi.xyz) - a focused implementation of AI for trading and investing research.
+Sistema de trading automatizado com IA que implementa estratégias personalizadas usando DeepSeek AI e dados em tempo real.
 
-## 🎯 Vision
-We're researching AI agents for trading that may eventually leverage [AFI](https://www.afi.xyz). With 4 years of experience training humans through our [bootcamp](https://algotradecamp.com), we're exploring where AI agents might complement human trading operations. This is experimental research, not a profitable trading solution.
+## 🎯 Estratégia Implementada: Distância MME9 + Bollinger Bands
 
-## 💡 Concept
-AI agents might help address common trading challenges:
-- Emotional reactions
-- Ego-driven decisions
-- Inconsistent execution
-- Fatigue effects
-- Impatience
-- Fear & Greed cycles
+✅ **Sistema Completo Funcionando:**
+- 📊 Indicador: Distância entre preço e MME9 (%)
+- 🎯 Filtro: Bollinger Bands de 200 períodos aplicadas na distância
+- 🧠 IA: DeepSeek analisa e decide stops/alvos automaticamente
+- 🎮 Simuladores: Teste sem risco antes de usar dinheiro real
 
-While we use the RBI framework for strategy research, we're exploring AI agents as potential tools. We're in early stages with LLM technology, investigating possibilities in the trading space.
+## 🚀 Como Começar (5 minutos)
+
+### 1. **Configure as APIs** (2 min)
+```bash
+# Copie o template
+cp .env.example .env
+
+# Edite o .env com suas chaves:
+# DEEPSEEK_API_KEY=sua_chave_deepseek
+# BIRDEYE_API_KEY=sua_chave_birdeye
+```
+
+### 2. **Instale dependências** (1 min)
+```bash
+pip install -r requirements.txt
+```
+
+### 3. **Teste o sistema** (2 min)
+```bash
+# Verificar APIs
+python verificar_apis.py
+
+# Testar estratégia (SEM RISCO)
+python test_strategy.py
+
+# Simulador visual
+python simulador_visual.py
+```
+
+## 🎮 Simuladores Disponíveis
+
+### 📊 **Teste Básico**
+```bash
+python test_strategy.py
+```
+- ✅ Análise de indicadores
+- ✅ Sinais de compra/venda
+- ✅ Backtest histórico
+- ✅ Estatísticas de performance
+
+### 🎮 **Simulador Visual**
+```bash
+python simulador_visual.py
+```
+- ✅ Gráficos ASCII em tempo real
+- ✅ Simulação de P&L
+- ✅ Monitor live de sinais
+- ✅ Visualização das Bollinger Bands
+
+## 📚 Documentação Completa
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `GUIA_API_KEYS.md` | Como obter todas as APIs necessárias |
+| `GUIA_ESTRATEGIA.md` | Como usar o sistema completo |
+| `GUIA_SIMULADOR.md` | Como usar os simuladores visuais |
+| `RESUMO_FINAL.md` | Resumo completo do projeto |
 
 ## 🗺️ Research Roadmap
 

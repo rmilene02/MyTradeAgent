@@ -85,5 +85,5 @@ Your content here, maintaining the specified style and fully addressing requirem
 """
 
 
-prompts from the following posts
-https://github.com/anthropics/anthropic-cookbook/tree/main 
+prompts adapted for DeepSeek AI integration
+Original inspiration from various AI prompt engineering resources 

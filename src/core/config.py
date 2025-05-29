@@ -47,12 +47,18 @@ buy_under = .0946
 sell_over = 1
 
 # Data collection settings 📈
-DAYSBACK_4_DATA = 3
+DAYSBACK_4_DATA = 10  # Aumentado para 10 dias para ter dados suficientes para Bollinger 200
 DATA_TIMEFRAME = '3m'  # 1m, 3m, 5m, 15m, 30m, 1H, 2H, 4H, 6H, 8H, 12H, 1D, 3D, 1W, 1M
 SAVE_OHLCV_DATA = False  # 🌙 Set to True to save data permanently, False will only use temp data during run
 
-# AI Model Settings 🤖
-AI_MODEL = "claude-3-haiku-20240307"  # Claude model to use: claude-3-haiku-20240307,claude-3-sonnet-20240229, claude-3-opus-20240229
+# Configurações da Estratégia Distância MME9 + Bollinger Bands 🎯
+STRATEGY_MME_PERIOD = 9  # Período da MME para calcular distância
+STRATEGY_BB_PERIOD = 200  # Período das Bollinger Bands
+STRATEGY_BB_STD = 2  # Desvio padrão das Bollinger Bands
+STRATEGY_MIN_EXHAUSTION_PERIODS = 2  # Mínimo de períodos em exaustão antes de considerar reversão
+
+# AI Model Settings 🤖 - DeepSeek
+AI_MODEL = "deepseek-chat"  # DeepSeek model: deepseek-chat, deepseek-coder
 AI_MAX_TOKENS = 1024  # Max tokens for response
 AI_TEMPERATURE = 0.7  # Creativity vs precision (0-1)
 

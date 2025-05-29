@@ -6,6 +6,7 @@ Built with love by Moon Dev 🚀
 
 from ..core.config import *
 from ..core import nice_funcs as n
+from .custom_indicators import generate_strategy_summary
 import pandas as pd
 from datetime import datetime
 import os
@@ -34,6 +35,12 @@ def collect_token_data(token, days_back=DAYSBACK_4_DATA, timeframe=DATA_TIMEFRAM
             
         # Ensure directory exists
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        
+        # Aplicar indicadores customizados da estratégia
+        strategy_summary = generate_strategy_summary(data)
+        
+        # Adicionar resumo da estratégia aos dados
+        data.attrs['strategy_summary'] = strategy_summary
         
         # Save to CSV
         data.to_csv(save_path)
